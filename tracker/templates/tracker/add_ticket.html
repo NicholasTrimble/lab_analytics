@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log New QA Ticket</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            padding: 40px; 
+            color: #333;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+        h2 { text-align: center; color: #2c3e50; }
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+        .submit-btn:hover { background-color: #2980b9; }
+        .cancel-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #7f8c8d;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <h2>Log New Remake</h2>
+        
+        <form method="POST">
+            {% csrf_token %} {{ form.as_p }} <button type="submit" class="submit-btn">Save QA Ticket</button>
+        </form>
+        
+        <a href="{% url 'dashboard' %}" class="cancel-link">Cancel and return to Dashboard</a>
+    </div>
+
+</body>
+</html>

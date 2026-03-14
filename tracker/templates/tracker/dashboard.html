@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab QA Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            padding: 40px; 
+            color: #333;
+        }
+        .dashboard-container { max-width: 900px; margin: auto; }
+        .card { 
+            background: white; padding: 30px; border-radius: 12px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-bottom: 40px;
+        }
+        h1, h2 { text-align: center; color: #2c3e50; }
+        
+        /* New CSS for the Risk Engine Cards */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .risk-card {
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 5px solid #ccc;
+        }
+        .risk-Critical { border-top-color: #e74c3c; } /* Red */
+        .risk-High { border-top-color: #f39c12; }    /* Orange */
+        .risk-Medium { border-top-color: #3498db; }  /* Blue */
+        
+        .risk-badge {
+            display: inline-block; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.8rem; font-weight: bold; color: white;
+            margin-bottom: 10px;
+        }
+        .badge-Critical { background-color: #e74c3c; }
+        .badge-High { background-color: #f39c12; }
+        .badge-Medium { background-color: #3498db; }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <h1>Retention & Remake Analytics</h1>
+        
+        <a href="{% url 'add_ticket' %}" class="add-btn">+ Log New Remake</a>
+
+        <div class="card">
+            <canvas id="deptChart"></canvas>
+        </div>
+
+        <h2>Automated Retention Strategies</h2>
+        <div class="action-grid">
+            
+            {% for action in action_plan %}
+            <div class="risk-card risk-{{ action.risk_level }}">
+                <span class="risk-badge badge-{{ action.risk_level }}">{{ action.risk_level }} RISK</span>
+                <h3 style="margin-top: 0;">{{ action.name }}</h3>
+                <p><strong>Total Remakes:</strong> {{ action.remakes }}</p>
+                <p><strong>Primary Issue:</strong> {{ action.department }}</p>
+                <p style="font-size: 0.9rem; color: #555;"><strong>Suggested Action:</strong> {{ action.suggestion }}</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('deptChart').getContext('2d');
+        const deptChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ labels|safe }},
+                datasets: [{
+                    label: 'Total QA Failures',
+                    data: {{ counts|safe }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 10 } } },
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+
+</body>
+</html>
