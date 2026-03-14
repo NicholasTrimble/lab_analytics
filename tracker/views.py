@@ -2,6 +2,15 @@ from django.shortcuts import render, redirect
 from django.db.models import Count
 from .models import QualityTicket, Department, Doctor
 from .forms import TicketForm
+from google import genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+client = genai.Client(api_key=API_KEY)
 
 def dashboard(request):
     dept_data = Department.objects.annotate(ticket_count=Count('tickets')).values('name', 'ticket_count')
@@ -10,36 +19,42 @@ def dashboard(request):
 
     high_risk_doctors = Doctor.objects.annotate(
         total_remakes=Count('tickets')
-    ).filter(total_remakes__gt=0).order_by('-total_remakes')[:6]
+    ).filter(total_remakes__gt=0).order_by('-total_remakes')[:3]
 
     action_plan = []
     
     for doctor in high_risk_doctors:
-        top_dept = doctor.tickets.values('department__name').annotate(
+        top_dept_data = doctor.tickets.values('department__name', 'issue_description').annotate(
             count=Count('id')
         ).order_by('-count').first()
 
-        dept_name = top_dept['department__name'] if top_dept else "Unknown"
+        dept_name = top_dept_data['department__name'] if top_dept_data else "Unknown"
+        specific_issue = top_dept_data['issue_description'] if top_dept_data else "Unknown"
         
-        if dept_name == "Crown & Bridge":
-            suggestion = "High churn risk. Route next 5 cases to a Senior Tech and call clinic to verify margin preferences."
+        if doctor.total_remakes > 10:
             risk_level = "Critical"
-        elif dept_name == "Setup" or dept_name == "Baseplate":
-            suggestion = "Aesthetic/Fit issues detected. Schedule a quick sync with the doctor to review midline and overjet expectations."
+        elif doctor.total_remakes > 5:
             risk_level = "High"
-        elif dept_name == "Model Room":
-            suggestion = "Internal lab error. Retrain model room staff on this doctor's specific impression material to prevent distortion."
-            risk_level = "Medium"
         else:
-            suggestion = "Monitor closely. Send a 'Thank You' note with their next completed case to rebuild goodwill."
             risk_level = "Medium"
+
+        prompt = f"Act as a dental lab manager. Dr. {doctor.name} has had {doctor.total_remakes} remakes recently. The primary issue is '{specific_issue}' in the {dept_name} department. In exactly two short sentences, give me a professional, actionable retention strategy to save this account and prevent this specific error."
+
+        try:
+            response = client.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+            )
+            ai_suggestion = response.text
+        except Exception as e:
+            ai_suggestion = "AI suggestion temporarily unavailable."
 
         action_plan.append({
             'name': doctor.name,
             'remakes': doctor.total_remakes,
-            'department': dept_name,
+            'department': f"{dept_name} ({specific_issue})", 
             'risk_level': risk_level,
-            'suggestion': suggestion
+            'suggestion': ai_suggestion
         })
 
     context = {
