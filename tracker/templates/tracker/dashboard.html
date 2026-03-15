@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,31 +8,55 @@
     <style>
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f4f7f6; 
+            background-color: #f0f4f8; /* NDX clean light grey/blue */
             padding: 40px; 
             color: #333;
         }
         .dashboard-container { max-width: 900px; margin: auto; }
-        .card { 
-            background: white; padding: 30px; border-radius: 12px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05); margin-bottom: 40px;
-        }
-        h1, h2 { text-align: center; color: #2c3e50; }
         
-        /* New CSS for the Risk Engine Cards */
+        .logo-container {
+            text-align: left;
+            margin-top: -20px;
+            margin-bottom: 20px;
+            background-color: #022b54;
+            width: 65%;
+            padding: 15px 30px;
+            border-top-right-radius: 0px;
+            border-bottom-right-radius: 80px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+
+        }
+
+
+        .logo-container img {
+            max-width: 280px;
+            display: block; 
+        }
+
+        .card { 
+            background: white; padding: 30px; border-radius: 4px; /* Sharper corners */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 40px;
+            border-top: 4px solid #004C97; /* NDX Corporate Navy Blue */
+        }
+        
+        /* NDX Navy Header */
+        h1, h2 { text-align: center; color: #022b54; } 
+        
+        /* Risk Engine Cards */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
         .risk-card {
-            background: white; padding: 20px; border-radius: 8px;
+            background: white; padding: 20px; border-radius: 4px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             border-top: 5px solid #ccc;
         }
-        .risk-Critical { border-top-color: #e74c3c; } /* Red */
-        .risk-High { border-top-color: #f39c12; }    /* Orange */
-        .risk-Medium { border-top-color: #3498db; }  /* Blue */
+        .risk-Critical { border-top-color: #e74c3c; } 
+        .risk-High { border-top-color: #f39c12; }   
+        .risk-Medium { border-top-color: #3498db; }  
         
         .risk-badge {
             display: inline-block; padding: 4px 8px; border-radius: 4px;
@@ -42,30 +67,35 @@
         .badge-High { background-color: #f39c12; }
         .badge-Medium { background-color: #3498db; }
 
-
+        /* NDX Navy Button */
         .add-btn {
             display: block;
             width: 220px;
-            margin: 0 auto 30px auto; /* Centers the button and adds space below */
+            margin: 0 auto 30px auto; 
             padding: 12px 20px;
-            background-color: #27ae60; /* A nice, positive green color */
+            background-color: #022b54;
             color: white;
             text-align: center;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 4px;
             font-size: 1.1rem;
             font-weight: bold;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: background-color 0.2s ease-in-out;
         }
         .add-btn:hover {
-            background-color: #219150; /* Darkens slightly when hovered */
+            background-color: #003366; /* Darker Navy on hover */
         }
     </style>
 </head>
 <body>
 
     <div class="dashboard-container">
+        
+        <div class="logo-container">
+            <img src="{% static 'images/ndx-logo.png' %}" alt="National Dentex Labs Logo">
+        </div>
+
         <h1>Retention & Remake Analytics</h1>
         
         <a href="{% url 'add_ticket' %}" class="add-btn">+ Log New Remake</a>
@@ -99,8 +129,8 @@
                 datasets: [{
                     label: 'Total QA Failures',
                     data: {{ counts|safe }},
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(0, 76, 151, 0.7)', 
+                    borderColor: 'rgba(0, 76, 151, 1)', 
                     borderWidth: 1,
                     borderRadius: 4
                 }]

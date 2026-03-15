@@ -9,9 +9,7 @@ I added AI feature that uses Google Gemini API to actively flag which doctors ar
 
 
 Setup guide:
-To run this on your own machine, clone the repo and create a .env file in the main folder with your GEMINI_API_KEY. Install the requirements by running python -m pip install django google-genai python-dotenv faker. Set up the database by running python manage.py makemigrations and python manage.py migrate, then run python manage.py seed_data to fill it with test data. Finally, start the server with python manage.py runserver and follow the link provided in the terminal.
+To run this on your own machine, clone the repo and create a .env file in the main folder with your GEMINI_API_KEY. Install the requirements by running python -m pip install requirements.txt. Set up the database by running python manage.py makemigrations and python manage.py migrate, then run python manage.py seed_data to fill it with test data. Finally, start the server with python manage.py runserver and follow the link provided in the terminal.
 
 
 
-(Personal thoughts):
-I should have utilized a virtual environment and used a requirements.txt file to make setup on this easier, but as this is mainly a "for personal use" kind of project, I did not take the extra steps.

@@ -5,6 +5,7 @@ from .forms import TicketForm
 from google import genai
 import os
 from dotenv import load_dotenv
+from django.contrib.auth.decorators import login_required
 
 load_dotenv()
 
@@ -12,6 +13,7 @@ API_KEY = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(api_key=API_KEY)
 
+@login_required(login_url='/admin/login/')
 def dashboard(request):
     dept_data = Department.objects.annotate(ticket_count=Count('tickets')).values('name', 'ticket_count')
     labels = [item['name'] for item in dept_data]
@@ -66,7 +68,7 @@ def dashboard(request):
     return render(request, 'tracker/dashboard.html', context)
 
 
-
+@login_required(login_url='/admin/login/')
 def add_ticket(request):
     if request.method == 'POST':
         form = TicketForm(request.POST)
