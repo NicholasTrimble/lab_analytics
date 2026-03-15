@@ -1,3 +1,9 @@
+![Project Banner](static/images/banner1.png)
+
+![Project Banner](static/images/banner2.png)
+
+
+
 Retention and Analytics App.
 
 I built this to solve a real problem we have at the lab which is, tracking quality assurance and keeping doctors happy. Since our lab runs entirely on paper prescriptions, nobody at the workbenches can use a computer to log data. To fix this, I built an app specifically for the final quality control desk. When a manager catches a remake, they can use a fast, simple form to log the defect and tie it directly to the specific doctor and the department at fault.
