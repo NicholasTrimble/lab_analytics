@@ -50,6 +50,7 @@ def dashboard(request):
             ai_suggestion = response.text
         except Exception as e:
             ai_suggestion = "AI suggestion temporarily unavailable."
+            print(f"DEBUG ERROR: {e}")
 
         action_plan.append({
             'name': doctor.name,
